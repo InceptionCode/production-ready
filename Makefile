@@ -1,7 +1,7 @@
 .PHONY: run test lint docker-build docker-run
 
 run:
-	uvicorn app.main:app --reload --port 8000
+	uvicorn app.main:app --reload --reload-exclude ".venv/*" --port 8000
 
 test:
 	pytest tests/ -v
@@ -9,8 +9,14 @@ test:
 lint:
 	ruff check app/ tests/
 
+ci-build: 
+	docker build -t task-service:ci .
+	
 docker-build:
 	docker build -t task-service:latest .
 
 docker-run:
 	docker compose up
+
+docker-stop:
+	docker compose down

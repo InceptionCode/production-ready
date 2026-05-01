@@ -6,15 +6,15 @@ A small, production-minded task management API built with FastAPI and SQLite. De
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Language | Python 3.12 |
-| Framework | FastAPI |
-| Server | Uvicorn |
-| Database | SQLite via aiosqlite |
-| Config | pydantic-settings |
-| Tests | pytest + httpx |
-| Container | Docker |
+| Layer     | Technology           |
+| --------- | -------------------- |
+| Language  | Python 3.12          |
+| Framework | FastAPI              |
+| Server    | Uvicorn              |
+| Database  | SQLite via aiosqlite |
+| Config    | pydantic-settings    |
+| Tests     | pytest + httpx       |
+| Container | Docker               |
 
 ---
 
@@ -30,6 +30,8 @@ cd production-ready
 cp .env.example .env
 
 # Install dependencies
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
 # Run the app
@@ -43,27 +45,28 @@ The API is now available at `http://localhost:8000`.
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `APP_ENV` | `development` | Environment name (development / production) |
-| `DATABASE_URL` | `./data/tasks.db` | Path to SQLite database file |
-| `LOG_LEVEL` | `INFO` | Python logging level |
-| `PORT` | `8000` | Port the server listens on |
+| Variable       | Default           | Description                                 |
+| -------------- | ----------------- | ------------------------------------------- |
+| `APP_ENV`      | `development`     | Environment name (development / production) |
+| `DATABASE_URL` | `./data/tasks.db` | Path to SQLite database file                |
+| `LOG_LEVEL`    | `INFO`            | Python logging level                        |
+| `PORT`         | `8000`            | Port the server listens on                  |
 
 ---
 
 ## Endpoints
 
-| Method | Path | Description | Request Body | Response |
-|---|---|---|---|---|
-| GET | `/healthz` | Liveness check | — | `{"status": "ok"}` |
-| GET | `/readyz` | Readiness check (DB ping) | — | `{"status": "ok"}` |
-| GET | `/api/tasks/` | List all tasks | — | `Task[]` |
-| POST | `/api/tasks/` | Create a task | `{"title": "..."}` | `Task` (201) |
-| PATCH | `/api/tasks/{id}` | Update a task | `{"title"?: "...", "completed"?: bool}` | `Task` |
-| DELETE | `/api/tasks/{id}` | Delete a task | — | 204 No Content |
+| Method | Path              | Description               | Request Body                            | Response           |
+| ------ | ----------------- | ------------------------- | --------------------------------------- | ------------------ |
+| GET    | `/healthz`        | Liveness check            | —                                       | `{"status": "ok"}` |
+| GET    | `/readyz`         | Readiness check (DB ping) | —                                       | `{"status": "ok"}` |
+| GET    | `/api/tasks/`     | List all tasks            | —                                       | `Task[]`           |
+| POST   | `/api/tasks/`     | Create a task             | `{"title": "..."}`                      | `Task` (201)       |
+| PATCH  | `/api/tasks/{id}` | Update a task             | `{"title"?: "...", "completed"?: bool}` | `Task`             |
+| DELETE | `/api/tasks/{id}` | Delete a task             | —                                       | 204 No Content     |
 
 **Task schema:**
+
 ```json
 {
   "id": "uuid",
@@ -91,12 +94,14 @@ Tests use an isolated in-memory SQLite database per test — no shared state.
 ## Docker
 
 **Build:**
+
 ```bash
 make docker-build
 # or: docker build -t task-service:latest .
 ```
 
 **Run:**
+
 ```bash
 make docker-run
 # or: docker compose up
@@ -105,6 +110,7 @@ make docker-run
 The SQLite database is persisted in a named Docker volume (`db_data`) so data survives container restarts.
 
 **Stop:**
+
 ```bash
 docker compose down
 ```
